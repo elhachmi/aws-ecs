@@ -41,10 +41,9 @@ aws ecs register-task-definition --generate-cli-skeleton
 
 If your are new to aws ecs please refer to the folowing links
 
-[Task deifnition parameters] (http://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)
+[Task deifnition parameters](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)
 
-[Task definition example]
-(http://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html)
+[Task definition example](http://docs.aws.amazon.com/AmazonECS/latest/developerguide/example_task_definitions.html)
 
 ## How it works
 * First: it tries to register a new task-definition and retrieve the new task revision.
