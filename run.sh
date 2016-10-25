@@ -21,7 +21,7 @@ check_desired_count() {
 }
 
 exec_command() {
-    echo "$1\n"
+    echo "\e[2m$1\e[0m\n"
     eval $1
 }
 
@@ -77,4 +77,4 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
-echo -e "\e[42m    Service deployed with sucess.    \e[0m"
+echo -e "\e[42m    Service deployed with success.    \e[0m"
