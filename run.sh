@@ -78,3 +78,4 @@ aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERC
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
 echo -e "\e[42m    Service deployed with success.    \e[0m"
+sleep 10
