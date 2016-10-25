@@ -1,0 +1,27 @@
+name: aws-ecs
+version: 0.1.1
+description: Deploy service to AWS ECS
+keywords:
+  - aws
+  - ecs
+properties:
+
+  key:
+    type: string
+    required: true
+  secret:
+    type: string
+    required: true
+  region:
+    type: string
+    required: false
+
+  task-definition:
+    type: string
+    required: true
+  task-definition-file:
+    type: string
+    required: true
+  desired-count:
+    type: int
+    required: true
