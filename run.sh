@@ -34,7 +34,7 @@ sucess() {
 }
 
 error() {
-    echo -e "\e[42;30m    $1    \e[0m\n"
+    echo -e "\e[41;30m    $1    \e[0m\n"
 }
 
 
