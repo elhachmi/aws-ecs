@@ -21,7 +21,7 @@ check_desired_count() {
 }
 
 exec_command() {
-    echo "\e[2m$1\e[0m\n"
+    echo -e "\e[2m$1\e[0m\n"
     eval $1
 }
 
