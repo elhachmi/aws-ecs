@@ -1,6 +1,4 @@
 box: wercker/default
 build:
   steps:
-      - install-packages:
-         packages: git
       - validate-wercker-step

@@ -47,13 +47,6 @@ TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION:$TASK_REVISION
 
 
 
-if git show $WERCKER_GIT_COMMIT | grep -q nginx-prodx.conf
-then
-   echo "OK";
-else
-   echo "NOT OK";
-fi
-
 if [[ -z $TASK_REVISION ]]; then
     error "Cannot register task definition." 1>&2
     exit 1
