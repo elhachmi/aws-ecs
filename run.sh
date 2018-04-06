@@ -40,12 +40,23 @@ error() {
 h1 "\n\nRegisting new task definition"
 
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
-exec_command "$register_task"
 
-TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
-TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION:$TASK_REVISION
+if git show $WERCKER_GIT_COMMIT | grep -q task-definition-*.json
+then
+   h1 "\n\nRegisting new task definition"
+   exec_command "$register_task"
+   TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
+    if [[ -z $TASK_REVISION ]]; then
+        error "Cannot register task definition." 1>&2
+        exit 1
+    else
+        sucess "Task definition registred $TASK_DEFINITION."
+    fi
+else
+    h1 "\n\nAvoiding task registration"
+fi
 
-
+TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
 
 if [[ -z $TASK_REVISION ]]; then
     error "Cannot register task definition." 1>&2
@@ -64,9 +75,10 @@ check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE  0
 sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 
 
-
-
-h1 "Upscale $WERCKER_AWS_ECS_SERVICE service with task-definition:"$TASK_DEFINITION
+get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION $AWS_DEFAULT_REGION > revision.json"
+exec_command "$get_latest_revision"
+TASK_REVISION=$(cat revision.json | jq -r '.[].revision')
+h1 "Upscale $WERCKER_AWS_ECS_SERVICE service with task-definition $TASK_DEFINITION:$TASK_REVISION"
 
 update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION --task-definition $TASK_DEFINITION --desired-count $WERCKER_AWS_ECS_DESIRED_COUNT > /dev/null"
 exec_command "$update_service"
@@ -77,5 +89,8 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
+echo -e "\e[42m                                      \e[0m"
 echo -e "\e[42m    Service deployed with success.    \e[0m"
-sleep 10
+echo -e "\e[42m                                      \e[0m"
+
+sleep 3
