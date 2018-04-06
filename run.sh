@@ -79,6 +79,6 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
-echo -e "\e[42m\n\n                 Service deployed with success.                 \n\n\e[0m"
+echo -e "\e[42m          \n\n" h1 Service deployed with success. "\n\n                      \e[0m"
 
 sleep 3
