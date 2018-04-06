@@ -64,7 +64,7 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 
 TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
 
-get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION $AWS_DEFAULT_REGION > revision.json"
+get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION --region=$AWS_DEFAULT_REGION > revision.json"
 exec_command "$get_latest_revision"
 TASK_REVISION=$(cat revision.json | jq -r '.[].revision')
 
@@ -79,8 +79,9 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
-echo -e "\e[42m                                                             \e[0m"
-echo -e "\e[42m                 Service deployed with success.              \e[0m"
-echo -e "\e[42m                                                             \e[0m"
+echo -e "\e[42m                                                               "
+echo -e "                 Service deployed with success.                      "
+echo -e "                                                                \e[0m"
+
 
 sleep 3
