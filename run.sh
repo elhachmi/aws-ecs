@@ -39,7 +39,7 @@ error() {
 
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
-if git show $WERCKER_GIT_COMMIT | grep -q task-definition-*.json
+if git show $WERCKER_GIT_COMMIT | grep -q task-definition
 then
    h1 "\n\nRegisting new task definition"
    exec_command "$register_task"
@@ -79,9 +79,6 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
-echo -e "\e[42m                                                               "
-echo -e "                 Service deployed with success.                      "
-echo -e "                                                                \e[0m"
-
+echo -e "\e[42m\n\n                 Service deployed with success.                 \n\n\e[0m"
 
 sleep 3
