@@ -37,8 +37,6 @@ error() {
 }
 
 
-h1 "\n\nRegisting new task definition"
-
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
 if git show $WERCKER_GIT_COMMIT | grep -q task-definition-*.json
@@ -56,16 +54,6 @@ else
     h1 "\n\nAvoiding task registration"
 fi
 
-TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
-
-if [[ -z $TASK_REVISION ]]; then
-    error "Cannot register task definition." 1>&2
-    exit 1
-else
-    sucess "Task definition registred $TASK_DEFINITION."
-fi
-
-
 
 h1 "Downscale $WERCKER_AWS_ECS_SERVICE service"
 
@@ -74,10 +62,12 @@ exec_command "$update_service"
 check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE  0
 sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 
+TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
 
 get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION $AWS_DEFAULT_REGION > revision.json"
 exec_command "$get_latest_revision"
 TASK_REVISION=$(cat revision.json | jq -r '.[].revision')
+
 h1 "Upscale $WERCKER_AWS_ECS_SERVICE service to task-definition $TASK_DEFINITION:$TASK_REVISION"
 
 update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION --task-definition $TASK_DEFINITION --desired-count $WERCKER_AWS_ECS_DESIRED_COUNT > /dev/null"
