@@ -15,7 +15,7 @@ check_desired_count() {
                 error "Time out, failed to update service." 1>&2
                 exit 1
             fi
-            sleep 5
+            sleep 1
     done
 }
 
@@ -39,7 +39,7 @@ error() {
 
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
-if git show $WERCKER_GIT_COMMIT | grep -q task-definition
+if [ git show $WERCKER_GIT_COMMIT | grep -q task-definition ] && [ $WERCKER_AWS_ECS_TASK_DEFINITION_FILE != 'none']
 then
    h1 "\n\nRegisting new task definition"
    exec_command "$register_task"
@@ -79,6 +79,6 @@ sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
-echo -e "\e[42m\n\n     Service deployed with success.                       \e[0m"
+echo -e "\e[42m\n\n               Service deployed with success.                     \n\e[0m"
 
-sleep 3
+sleep 2
