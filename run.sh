@@ -39,7 +39,7 @@ error() {
 
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
-if [ git show $WERCKER_GIT_COMMIT | grep -q task-definition ] && [ $WERCKER_AWS_ECS_TASK_DEFINITION_FILE != 'none']
+if [ git show $WERCKER_GIT_COMMIT | grep -q task-definition ] && [ $WERCKER_AWS_ECS_TASK_DEFINITION_FILE != 'none' ]
 then
    h1 "\n\nRegisting new task definition"
    exec_command "$register_task"
