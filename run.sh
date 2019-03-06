@@ -7,7 +7,7 @@ check_desired_count() {
     describe_services="aws ecs describe-services --cluster $1 --services $2  --region=$AWS_DEFAULT_REGION > services.json"
     exec_command "$describe_services"
     i="0"
-    while [[ `cat services.json | jq '.[][].runningCount'` != $3 ]]
+    while [ `cat services.json | jq '.[][].runningCount'` != $3 ]
         do
             eval $describe_services
             i=$i+1
