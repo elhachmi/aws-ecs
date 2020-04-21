@@ -1,5 +1,5 @@
 name: aws-ecs
-version: 0.2.5
+version: 0.2.6
 description: Deploy service to AWS ECS
 keywords:
   - aws
