@@ -44,7 +44,7 @@ then
    h1 "\n\nRegisting new task definition"
    exec_command "$register_task"
    TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
-    if [[ -z $TASK_REVISION ]]; then
+    if [-z $TASK_REVISION ]; then
         error "Cannot register task definition." 1>&2
         exit 1
     else
@@ -55,30 +55,34 @@ else
 fi
 
 
-h1 "Downscale $WERCKER_AWS_ECS_SERVICE service"
+if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6"]
+then
+    h1 "Deploy service with --force-new-deployment"
+    update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
+else
+    h1 "Downscale $WERCKER_AWS_ECS_SERVICE service"
 
-update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --desired-count 0 --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION 1> /dev/null"
-exec_command "$update_service"
-check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE  0
-sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
+    update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --desired-count 0 --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION 1> /dev/null"
+    exec_command "$update_service"
+    check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE  0
+    sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
 
-TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
+    TASK_DEFINITION=$WERCKER_AWS_ECS_TASK_DEFINITION
 
-get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION --region=$AWS_DEFAULT_REGION > revision.json"
-exec_command "$get_latest_revision"
-TASK_REVISION=$(cat revision.json | jq -r '.[].revision')
+    get_latest_revision="aws ecs describe-task-definition --task-definition $TASK_DEFINITION --region=$AWS_DEFAULT_REGION > revision.json"
+    exec_command "$get_latest_revision"
+    TASK_REVISION=$(cat revision.json | jq -r '.[].revision')
 
-h1 "Upscale $WERCKER_AWS_ECS_SERVICE service to task-definition $TASK_DEFINITION:$TASK_REVISION"
+    h1 "Upscale $WERCKER_AWS_ECS_SERVICE service to task-definition $TASK_DEFINITION:$TASK_REVISION"
 
-update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION --task-definition $TASK_DEFINITION --desired-count $WERCKER_AWS_ECS_DESIRED_COUNT > /dev/null"
-exec_command "$update_service"
+    update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION --task-definition $TASK_DEFINITION --desired-count $WERCKER_AWS_ECS_DESIRED_COUNT > /dev/null"
+    exec_command "$update_service"
 
-check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE $WERCKER_AWS_ECS_DESIRED_COUNT
-sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
+    check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE $WERCKER_AWS_ECS_DESIRED_COUNT
+    sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
+fi
 
 aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
 echo -e "\e[42m\n\n               Service deployed with success.                     \n\e[0m"
-
-sleep 2
