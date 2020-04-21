@@ -39,23 +39,23 @@ error() {
 
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
-if [[ git show $WERCKER_GIT_COMMIT ]] | [[ grep -q task-definition ]] && [[ $WERCKER_AWS_ECS_TASK_DEFINITION_FILE != 'none' ]]
-then
-   h1 "\n\nRegisting new task definition"
-   exec_command "$register_task"
-   TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
-    if [[ -z $TASK_REVISION ]]; then
-        error "Cannot register task definition." 1>&2
-        exit 1
-    else
-        sucess "Task definition registred $TASK_DEFINITION."
-    fi
-else
-    h1 "\n\nAvoiding task registration"
-fi
+# if [ `git show $WERCKER_GIT_COMMIT` ] || [ `grep -q task-definition` ] && [ $WERCKER_AWS_ECS_TASK_DEFINITION_FILE != 'none' ]
+# then
+#    h1 "\n\nRegisting new task definition"
+#    exec_command "$register_task"
+#    TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
+#     if [[ -z $TASK_REVISION ]]; then
+#         error "Cannot register task definition." 1>&2
+#         exit 1
+#     else
+#         sucess "Task definition registred $TASK_DEFINITION."
+#     fi
+# else
+#     h1 "\n\nAvoiding task registration"
+# fi
 
 
-if  [[ -z $WERCKER_AWS_ECS_DESIRED_COUNT ]] || [[ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6"]]
+if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6" ]
 then
     h1 "Deploy service with --force-new-deployment"
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
