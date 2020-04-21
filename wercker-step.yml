@@ -22,7 +22,7 @@ properties:
     required: true
   task-definition-file:
     type: string
-    required: true
+    required: false
   desired-count:
     type: int
-    required: true
+    required: false
