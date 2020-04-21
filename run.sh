@@ -44,7 +44,7 @@ then
    h1 "\n\nRegisting new task definition"
    exec_command "$register_task"
    TASK_REVISION=$(cat registration-result.json | jq -r '.[].revision')
-    if [-z $TASK_REVISION ]; then
+    if [ -z $TASK_REVISION ]; then
         error "Cannot register task definition." 1>&2
         exit 1
     else
@@ -86,3 +86,5 @@ aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERC
 sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
 echo -e "\e[42m\n\n               Service deployed with success.                     \n\e[0m"
+
+sleep 2
