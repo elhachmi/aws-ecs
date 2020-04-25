@@ -25,7 +25,7 @@ exec_command() {
 }
 
 h1() {
-    echo -e "\e[1;4m\n$1\e[0m\n\n"
+    echo -e "\e[1;4m\n\n$1\e[0m\n\n"
 }
 
 sucess() {
@@ -44,7 +44,6 @@ if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56
 then
     h1 "Deploy service v2"
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
-    echo $update_service
     echo "Please wait, rolling update can take up to 4 minutes"
     exec_command "$update_service"
     sleep 2
