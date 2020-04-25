@@ -44,6 +44,9 @@ if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56
 then
     h1 "Deploy service with --force-new-deployment"
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
+    echo $update_service
+    echo "Please wait, deployment service can take 1 - 3 minutes"
+    exec_command "$update_service"
     sleep 2
 else
 
@@ -67,10 +70,9 @@ else
 
     check_desired_count $WERCKER_AWS_ECS_CLUSTER $WERCKER_AWS_ECS_SERVICE $WERCKER_AWS_ECS_DESIRED_COUNT
     sucess "Service $WERCKER_AWS_ECS_SERVICE updated with success."
-
-    aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
-    sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
-
 fi
+
+aws ecs wait services-stable --cluster $WERCKER_AWS_ECS_CLUSTER --services $WERCKER_AWS_ECS_SERVICE --region=$AWS_DEFAULT_REGION
+sucess "Service $WERCKER_AWS_ECS_SERVICE has reached a steady state."
 
 echo -e "\e[42m\n\n               Service deployed with success.                     \n\e[0m"
