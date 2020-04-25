@@ -40,14 +40,14 @@ error() {
 register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --cli-input-json file://$WERCKER_AWS_ECS_TASK_DEFINITION_FILE > registration-result.json"
 
 
-if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6"]
+if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6" ]
 then
     h1 "Deploy service with --force-new-deployment"
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
     sleep 2
 else
 
-    h1 "Downscale $WERCKER_AWS_ECS_SERVICE service"
+    h1 "Downscale $WERCKER_AWS_ECS_SERVICE service (deprecated v1 only)"
 
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --desired-count 0 --cluster=$WERCKER_AWS_ECS_CLUSTER --region=$AWS_DEFAULT_REGION 1> /dev/null"
     exec_command "$update_service"
