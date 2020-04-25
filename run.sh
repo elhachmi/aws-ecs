@@ -25,8 +25,7 @@ exec_command() {
 }
 
 h1() {
-    echo "\n"
-    echo -e "\e[1;4m$1\e[0m\n\n"
+    echo -e "\e[1;4m\n$1\e[0m\n\n"
 }
 
 sucess() {
@@ -43,9 +42,10 @@ register_task="aws ecs register-task-definition --region=$AWS_DEFAULT_REGION --c
 
 if  [ -z $WERCKER_AWS_ECS_DESIRED_COUNT ] || [ $AWS_ACCESS_KEY_ID = "AKIA4B5NI56ENW7YABH6" ]
 then
-    h1 "Deployment service v2"
+    h1 "Deploy service v2"
     update_service="aws ecs update-service --service=$WERCKER_AWS_ECS_SERVICE --cluster=$WERCKER_AWS_ECS_CLUSTER --force-new-deployment --region=$AWS_DEFAULT_REGION 1> /dev/null"
-    echo "\nPlease wait, rolling update can take up to 4 minutes"
+    echo $update_service
+    echo "Please wait, rolling update can take up to 4 minutes"
     exec_command "$update_service"
     sleep 2
 else
