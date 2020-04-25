@@ -19,7 +19,7 @@ tamtam-pro/aws-ecs step is a very simple bash script using aws cli to deploy ecs
 ## Example
 ```yml
 deploy-to-dev:
-    box: tamtamp/aws-cli
+    box: tamtamp/awscli
     steps:
     -  tamtam-pro/aws-ecs :
         key: aws-secret-access-key-id
